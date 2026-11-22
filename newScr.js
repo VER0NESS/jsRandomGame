@@ -1,21 +1,46 @@
-'use strict'
-let arr=["100000","22222","45436","15666","1456","66664","150000000000000000000000"]
-for(let i=0;i<arr.length;i++){
-    if(arr[i][0]==="2" || arr[i][0]==="4"){
-        console.log(arr[i])
-    }
+"use strict"
+const isNum = function(num) {
+    return !isNaN(parseFloat(num)) && isFinite(num)
 }
-const isPrime=function(n){
-    let divs=0
-    for(let i=1;i<=n;i++){
-        if(n%i===0){
-            divs++
+const createGame = function() {
+    const secretNumber = Math.floor(Math.random() * 100) + 1
+    let attempts = 10
+    const guessStep = function() {
+        const input = prompt("Угадай число от 1 до 100")
+        if (input === null) {
+            alert("Игра окончена")
+            return
         }
+        if (input.trim() === "" || !isNum(input)) {
+            alert("Введи число!")
+            return guessStep()
+        }
+        const userNumber = Number(input.trim());
+        attempts--
+        if (userNumber === secretNumber) {
+            const playAgain = confirm("Поздравляю, Вы угадали!!! Хотели бы сыграть еще?")
+            if (playAgain) {
+                return createGame()()
+            }
+            alert("Игра окончена")
+            return
+        }
+        if (attempts <= 0) {
+            const playAgain = confirm("Попытки закончились, хотите сыграть еще?")
+            if (playAgain) {
+                return createGame()()
+            }
+            alert("Игра окончена")
+            return
+        }
+        if (userNumber > secretNumber) {
+            alert(`Загаданное число меньше, осталось попыток ${attempts}`)
+        } else {
+            alert(`Загаданное число больше, осталось попыток ${attempts}`)
+        }
+        return guessStep()
     }
-    if(divs===2){
-        console.log("делители этого числа:",1,"и",n)
-    }
+    return guessStep
 }
-for(let i=1;i<=100;i++){
-    isPrime(i)
-}
+const startGame = createGame()
+startGame()
